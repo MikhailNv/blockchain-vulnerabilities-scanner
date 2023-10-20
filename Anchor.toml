@@ -1,0 +1,16 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+solana_scanner = "536ncJEgoTafxQW64miFZTrcTUtZcqt61by1SfPUsXGZ"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "/home/mikhail/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
