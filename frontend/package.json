@@ -2,6 +2,13 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "browser": {
+    "fs": false,
+    "original-fs": false,
+    "os": false,
+    "path": false,
+    "child_process": false
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,9 +21,14 @@
     "@solana/wallet-adapter-react-ui": "^0.9.34",
     "@solana/wallet-adapter-wallets": "^0.19.23",
     "@solana/web3.js": "^1.87.1",
+    "@zip.js/zip.js": "^2.7.30",
+    "adm-zip": "^0.5.10",
     "bigint-buffer": "^1.1.5",
+    "jszip": "^3.10.1",
+    "kaitai-struct": "^0.10.0",
     "lokijs": "^1.5.12",
     "next": "13.5.4",
+    "original-fs": "^1.2.0",
     "pino-pretty": "^10.2.3",
     "react": "^18",
     "react-dom": "^18",

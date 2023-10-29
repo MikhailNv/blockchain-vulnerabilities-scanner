@@ -1,21 +1,36 @@
+import { BlobReader, ZipReader } from "@zip.js/zip.js";
+import fileToArrayBuffer from 'file2arraybuffer'
 import {FC} from 'react'
+import { useState } from 'react';
+import { serverAction } from "./ServerAction";
 
-async function execCommand() {
-    const req = await fetch("/api/cves");
-    const data = await req.json();
+async function execCommand(package_name: string) {
+    // 'use server';
+    // const req = await fetch("/api/cves?" + new URLSearchParams({package_name: package_name}), {
+    //     method: 'GET',
+    //     headers: {
+    //       accept: 'application/json',
+    //     },
+    // });
+    // const data = await req.json();
+    // const cpe: string = await serverAction(package_name);
 
-    console.log(data);
+    console.log("cpe");
+}
+
+async function getFileNamesFromZip(e) {
+    const file = e.target.files[0];
+    const zipReader = new ZipReader(new BlobReader(file));
+    const entries = await zipReader.getEntries();
+    const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
+    const cpe: Array<string> = await serverAction(packages_name);
+    console.log(cpe);
+    return entries.map((entry) => entry.filename);
 }
 
 const FileUploader: FC = () => {
+    const [selectedFile, setSelectedFile] = useState<File>();
     return (
-    // <>
-    //     <button
-    //     type="button"
-    //     onClick={execCommand}>
-    //     Button
-    //     </button>
-    // </>
     <div className="relative flex justify-center py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover relative">
         {/* <div className="absolute bg-black opacity-60 inset-0 z-0"></div> */}
         <div className=" w-full p-10 bg-white rounded-xl z-10">
@@ -41,9 +56,9 @@ const FileUploader: FC = () => {
                                         <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
                                         <img className="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />
                                         </div>
-                                        <p className="pointer-none text-gray-500 "><span className="text-sm">Перенесите</span> файл сюда <br /> или <a href="" id="" className="text-blue-600 hover:underline">выберите файл</a> на вашем компьютере</p>
+                                        <p className="pointer-none text-gray-500 "><span className="text-sm">Перенесите</span> файл сюда <br /> или выберите файл на вашем компьютере</p>
                                     </div>
-                                    <input type="file" className="hidden" />
+                                    <input type="file" className="hidden" onChange={getFileNamesFromZip}/>
                                 </label>
                             </div>
                         </div>
