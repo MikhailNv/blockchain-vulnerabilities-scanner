@@ -23,6 +23,7 @@
     "@solana/web3.js": "^1.87.1",
     "@zip.js/zip.js": "^2.7.30",
     "adm-zip": "^0.5.10",
+    "antd": "^5.10.3",
     "bigint-buffer": "^1.1.5",
     "jszip": "^3.10.1",
     "kaitai-struct": "^0.10.0",
