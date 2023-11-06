@@ -16,10 +16,11 @@ export async function serverAction(req: Array<string>, years: string[]) {
     }
     // console.log(splitted_output_rpm2cpe);
     const output_rpm2cpe = execSync(`rpm2cpe -rpm 1 -cpe 2 -e 1 << EOF ${req.join("\n")}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
-    const splitted_output_rpm2cpe = output_rpm2cpe.replace(/\:alt.*\n/gi, '\n');
-    console.log(splitted_output_rpm2cpe.split('\n')[0]);
-    console.log(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${splitted_output_rpm2cpe.split('\n').slice(0, 5).join("\n")}\nEOF`);
-    const output_cpe2cve = execSync(`cpe2cve -cpe 1 -e 1 -cve 1 ${__feeds}/nvdcve-1.1-*.json.gz << EOF\n${splitted_output_rpm2cpe.split('\n')[0]}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
+    const splitted_output_rpm2cpe = output_rpm2cpe.replace(/\d\:alt.*\n/gi, '\n');
+    // console.log(splitted_output_rpm2cpe.split('\n').slice(0, 50).join("\n"));
+    // console.log(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${splitted_output_rpm2cpe.split('\n').slice(0, 50).join("\n")}\nEOF`);
+
+    const output_cpe2cve = execSync(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${splitted_output_rpm2cpe}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
 
     const splitted = output_cpe2cve.split(/\r?\n/);
     const filtered = splitted.filter( (e: string) => {
