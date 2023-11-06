@@ -12,22 +12,27 @@ import type { SelectProps } from 'antd';
 
 const { Dragger } = Upload;
 
-async function getFileNamesFromZip(e) {
-    const file = e.target.files[0];
-    const zipReader = new ZipReader(new BlobReader(file));
-    const entries = await zipReader.getEntries();
-    const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
-    const cpe: Array<string> = await serverAction(packages_name);
-    console.log(cpe);
-    return entries.map((entry) => entry.filename);
-}
-
 const FileUploader: FC = () => {
     const [options, setOptions] = useState<SelectProps['options']>([]);
     const [fileState, setFileState] = useState<boolean>(false);
     const [years, setYears] = useState<boolean>(false);
+    const [choosenYears, setChoosenYears] = useState<string[]>([]);
+    const [file, setFile] = useState<File>();
+
+    async function getFileNamesFromZip(choosenYears: string[], e: File) {
+        const file = e;
+        const zipReader = new ZipReader(new BlobReader(file));
+        const entries = await zipReader.getEntries();
+        const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
+        const cpe: Array<string> = await serverAction(packages_name, choosenYears);
+        console.log(cpe);
+        // console.log(choosenYears);
+        // console.log(e);
+        return entries.map((entry) => entry.filename);
+    }
 
     const handleChange = (value: string[]) => {
+        setChoosenYears(value);
         if (value.length > 0)
         {
             setYears(true);
@@ -38,11 +43,13 @@ const FileUploader: FC = () => {
         }
     };
 
+
     const props: UploadProps = {
         name: 'file',
         multiple: true,
         action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
         beforeUpload: async (file) => {
+            setFile(file);
             const options: SelectProps['options'] = [];
             const res = await getYearRangeNvdCve();
             for (var year of res) {
@@ -143,7 +150,8 @@ const FileUploader: FC = () => {
             <div className="mt-8 space-y-3">
                 <button type="button"
                 className="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg transition ease-in duration-300 disabled:opacity-50"
-                disabled={years ? false : true}>
+                disabled={years ? false : true}
+                onClick={() => getFileNamesFromZip(choosenYears, file!)}>
                 Загрузка
                 </button>
             </div>

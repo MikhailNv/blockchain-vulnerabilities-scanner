@@ -4,17 +4,23 @@ import { fileURLToPath } from 'url';
 
 const execSync = require('child_process').execSync;
 const path = require('path');
+const readline = require('readline');
 const __approot : string = path.resolve(__dirname).split('/.next')[0];
 const __feeds : string = __approot + "/feeds";
 
-export async function serverAction(req: Array<string>) {
+export async function serverAction(req: Array<string>, years: string[]) {
     const cpes_array: Array<string> = [];
-
-    // const output_nvdsync = execSync(`nvdsync -v=1 -cve_feed=cve-1.1.json.gz ${__feeds}`, { shell: '/bin/bash', encoding: 'utf-8' });
+    const path_to_cve_jsons_array: Array<string> = [];
+    for (var year of years) {
+      path_to_cve_jsons_array.push(`${__feeds}/nvdcve-1.1-${year}.json.gz`);
+    }
+    // console.log(splitted_output_rpm2cpe);
     const output_rpm2cpe = execSync(`rpm2cpe -rpm 1 -cpe 2 -e 1 << EOF ${req.join("\n")}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
     const splitted_output_rpm2cpe = output_rpm2cpe.replace(/\:alt.*\n/gi, '\n');
-    // console.log(execSync(`cpe2cve -cpe 1 -e 1 -cve 1 ${__feeds}/nvdcve-1.1-*.json.gz << EOF\n${splitted_output_rpm2cpe.split('\n')[0]}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' }));
+    console.log(splitted_output_rpm2cpe.split('\n')[0]);
+    console.log(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${splitted_output_rpm2cpe.split('\n').slice(0, 5).join("\n")}\nEOF`);
     const output_cpe2cve = execSync(`cpe2cve -cpe 1 -e 1 -cve 1 ${__feeds}/nvdcve-1.1-*.json.gz << EOF\n${splitted_output_rpm2cpe.split('\n')[0]}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
+
     const splitted = output_cpe2cve.split(/\r?\n/);
     const filtered = splitted.filter( (e: string) => {
       return e !== '';
