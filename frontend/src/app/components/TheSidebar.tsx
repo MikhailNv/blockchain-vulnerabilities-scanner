@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import { FC } from 'react'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import dynamic from 'next/dynamic';
 
@@ -86,7 +87,7 @@ const TheSidebar: FC = () => {
             {/* <div className="fixed bottom-8 right-8 md:static w-48 md:w-full">
                 <WalletMultiButtonDynamic />
             </div> */}
-            <WalletMultiButtonDynamic />
+            <WalletMultiButton className="rounded-full hover:bg-gray-100"/>
         </aside>
     </div>
     )

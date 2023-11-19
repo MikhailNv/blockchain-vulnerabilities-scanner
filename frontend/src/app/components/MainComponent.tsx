@@ -13,6 +13,8 @@ import {
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+
 
 // import the styles
 // import '@solana/wallet-adapter-react-ui/styles.css'

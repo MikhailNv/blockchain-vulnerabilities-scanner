@@ -1,7 +1,7 @@
 import { BlobReader, ZipReader } from "@zip.js/zip.js";
 import {FC} from 'react'
 import { useState } from 'react';
-import { serverAction, getYearRangeNvdCve, sss } from "./ServerAction";
+import { serverAction, getYearRangeNvdCve, sss, pinStringToIPFS } from "./ServerAction";
 
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
@@ -24,10 +24,9 @@ const FileUploader: FC = () => {
         const zipReader = new ZipReader(new BlobReader(file));
         const entries = await zipReader.getEntries();
         const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
-        const cpe: Array<string> = await serverAction(packages_name, choosenYears);
-        console.log(cpe);
-        // console.log(choosenYears);
-        // console.log(e);
+        const cves: string = await serverAction(packages_name, choosenYears);
+        const cid: any = await pinStringToIPFS(cves);
+        // console.log(cid);
         return entries.map((entry) => entry.filename);
     }
 
