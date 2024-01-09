@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
-declare_id!("536ncJEgoTafxQW64miFZTrcTUtZcqt61by1SfPUsXGZ");
+declare_id!("FqjacZXxfP69iy39YEHxTYn9hCYZ35c3STJqXgGnVFLH");
 
 #[program]
 pub mod solana_scanner {
@@ -12,11 +12,11 @@ pub mod solana_scanner {
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
 
-        if topic.chars().count() > 50 {
+        if topic.chars().count() > 20 {
             return Err(error!(ErrorCode::TopicTooLong))
         }
     
-        if content.chars().count() > 280 {
+        if content.chars().count() > 46 {
             return Err(error!(ErrorCode::ContentTooLong))
         }
 
@@ -53,16 +53,15 @@ const DISCRIMINATOR_LENGTH: usize = 8;
 const PUBLIC_KEY_LENGTH: usize = 32;
 const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
-const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
-const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-
+const MAX_TOPIC_LENGTH: usize = 20 * 4; // 50 chars max.
+const CVE_DATA_HASH_LENGTH: usize = 46 * 4;
 // 3. Add a constant on the Tweet account that provides its total size.
 impl Tweet {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH; // Content.
+        + STRING_LENGTH_PREFIX + CVE_DATA_HASH_LENGTH; // Topic.
 }
 
 #[error_code]

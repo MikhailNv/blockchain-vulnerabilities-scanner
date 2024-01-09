@@ -15,7 +15,7 @@ describe("solana-scanner", () => {
     const tweet = anchor.web3.Keypair.generate();
     // const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     // await sleep(10000);
-    await program.rpc.sendTweet('veganism', 'Hummus, am I right?', {
+    await program.rpc.sendTweet('Alt Linux', 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV', {
         accounts: {
             // Accounts here...
             tweet: tweet.publicKey,
@@ -31,15 +31,15 @@ describe("solana-scanner", () => {
 
     // Ensure it has the right data.
     assert.equal(tweetAccount.author.toBase58(), program.provider.wallet.publicKey.toBase58());
-    assert.equal(tweetAccount.topic, 'veganism');
-    assert.equal(tweetAccount.content, 'Hummus, am I right?');
+    assert.equal(tweetAccount.topic, 'Alt Linux');
+    assert.equal(tweetAccount.content, 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV');
     assert.ok(tweetAccount.timestamp);
   });
 
   it('can send a new tweet without a topic', async () => {
     // Call the "SendTweet" instruction.
     const tweet = anchor.web3.Keypair.generate();
-    await program.rpc.sendTweet('', 'gm', {
+    await program.rpc.sendTweet('', 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV', {
         accounts: {
             tweet: tweet.publicKey,
             author: program.provider.wallet.publicKey,
@@ -54,7 +54,7 @@ describe("solana-scanner", () => {
     // Ensure it has the right data.
     assert.equal(tweetAccount.author.toBase58(), program.provider.wallet.publicKey.toBase58());
     assert.equal(tweetAccount.topic, '');
-    assert.equal(tweetAccount.content, 'gm');
+    assert.equal(tweetAccount.content, 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV');
     assert.ok(tweetAccount.timestamp);
   });
 
@@ -66,7 +66,7 @@ describe("solana-scanner", () => {
 
     // Call the "SendTweet" instruction on behalf of this other user.
     const tweet = anchor.web3.Keypair.generate();
-    await program.rpc.sendTweet('veganism', 'Yay Tofu!', {
+    await program.rpc.sendTweet('Astra Linux', 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV', {
         accounts: {
             tweet: tweet.publicKey,
             author: otherUser.publicKey,
@@ -80,8 +80,8 @@ describe("solana-scanner", () => {
 
     // Ensure it has the right data.
     assert.equal(tweetAccount.author.toBase58(), otherUser.publicKey.toBase58());
-    assert.equal(tweetAccount.topic, 'veganism');
-    assert.equal(tweetAccount.content, 'Yay Tofu!');
+    assert.equal(tweetAccount.topic, 'Astra Linux');
+    assert.equal(tweetAccount.content, 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV');
     assert.ok(tweetAccount.timestamp);
   });
 
@@ -115,14 +115,14 @@ describe("solana-scanner", () => {
                     32 + // Author public key.
                     8 + // Timestamp.
                     4, // Topic string prefix.
-                bytes: bs58.encode(Buffer.from('veganism')),
+                bytes: bs58.encode(Buffer.from('Alt Linux')),
             }
         }
     ]);
 
-    assert.equal(tweetAccounts.length, 2);
+    assert.equal(tweetAccounts.length, 1);
     assert.ok(tweetAccounts.every(tweetAccount => {
-        return tweetAccount.account.topic === 'veganism'
+        return tweetAccount.account.topic === 'Alt Linux'
     }))
   });
 });
