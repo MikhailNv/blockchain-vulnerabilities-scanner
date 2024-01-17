@@ -2,7 +2,7 @@ import { BlobReader, ZipReader } from "@zip.js/zip.js";
 import {FC} from 'react'
 import { useState } from 'react';
 import { serverAction, getYearRangeNvdCve, sss, pinStringToIPFS } from "./ServerAction";
-
+import { sendTweet } from "../scripts/send-tweets"
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { message, Upload } from 'antd';
@@ -20,14 +20,16 @@ const FileUploader: FC = () => {
     const [file, setFile] = useState<File>();
 
     async function getFileNamesFromZip(choosenYears: string[], e: File) {
-        const file = e;
-        const zipReader = new ZipReader(new BlobReader(file));
-        const entries = await zipReader.getEntries();
-        const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
-        const cves: string = await serverAction(packages_name, choosenYears);
-        const cid: any = await pinStringToIPFS(cves);
-        // console.log(cid);
-        return entries.map((entry) => entry.filename);
+        // const file = e;
+        // const zipReader = new ZipReader(new BlobReader(file));
+        // const entries = await zipReader.getEntries();
+        // const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
+        // const cves: string = await serverAction(packages_name, choosenYears);
+        // const cid: any = await pinStringToIPFS(cves);
+        const tweet = await sendTweet('Alt Linux', "QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV")
+        console.log("TWEET: ", tweet)
+        // return entries.map((entry) => entry.filename);
+        return "string"
     }
 
     const handleChange = (value: string[]) => {

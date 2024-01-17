@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import {FC, useMemo} from 'react'
-import { initWorkspace } from './scripts/useWorkspace'
+import { initWorkspace, useWorkspace } from './scripts/useWorkspace'
 import { fetchTweets } from './scripts/fetch-tweets'
 import { Tweet } from './models/Tweet'
 import React from 'react';
@@ -13,6 +13,7 @@ import React from 'react';
 const Home: FC = () => {
   console.log("IN HOME")
   initWorkspace();
+  console.log(useWorkspace())
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 

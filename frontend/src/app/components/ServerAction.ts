@@ -54,19 +54,19 @@ export const sss = async() => {
 export const pinStringToIPFS = async (string: string) => {
   const JWT = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2MmFlM2E3Mi1mZTVjLTQwY2EtYWJiOS02ZmIzNWI1OGI2NWIiLCJlbWFpbCI6Im1paGFpbDIwMDIyMDE1QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfSx7ImlkIjoiTllDMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4MmZmYTlkY2JjYzEwN2E3MGU3OSIsInNjb3BlZEtleVNlY3JldCI6Ijg1NzNiNGEyMjNlMjViOGM2YjhiZjQ4NjI5MDNkNTE1YTYzMjVhOGQwZTA5ODA4MmRiYzY2OTlhNDU4OGEzYTEiLCJpYXQiOjE3MDAyOTc5NjF9.hO_RGb2KFrtOJAyAqroU-UJqqugqnocTz0YDYHCgo9E'
   try {
-   const buffer = Buffer.from(string, 'utf8')
-   const stream = Readable.from(buffer)
-   const data = new FormData()
-   data.append('file', stream, {
+    const buffer = Buffer.from(string, 'utf8')
+    const stream = Readable.from(buffer)
+    const data = new FormData()
+    data.append('file', stream, {
       filepath: "string.txt"
     })
-   const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", data, {
+    const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", data, {
       headers: {
         'Authorization': JWT
       }
     })
-   console.log(res.data)
+    return res.data
   } catch (error) {
-   console.log(error) 
+    console.log(error)
   }
 }

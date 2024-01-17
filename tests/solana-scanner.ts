@@ -14,7 +14,7 @@ describe("solana-scanner", () => {
     // Before sending the transaction to the blockchain.
     const tweet = anchor.web3.Keypair.generate();
     // const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-    // await sleep(10000);
+    console.log(anchor.web3.SystemProgram.programId)
     await program.rpc.sendTweet('Alt Linux', 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV', {
         accounts: {
             // Accounts here...
