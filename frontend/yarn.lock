@@ -412,6 +412,11 @@
   dependencies:
     "@particle-network/auth" "^0.5.5"
 
+"@popperjs/core@^2.11.2":
+  version "2.11.8"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
+  integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
+
 "@project-serum/anchor@^0.26.0":
   version "0.26.0"
   resolved "https://registry.yarnpkg.com/@project-serum/anchor/-/anchor-0.26.0.tgz#99e15a3923a5d10514f8185b2d3909e5699d60d5"
@@ -3488,6 +3493,13 @@ preact@10.4.1:
   version "10.4.1"
   resolved "https://registry.npmjs.org/preact/-/preact-10.4.1.tgz"
   integrity sha512-WKrRpCSwL2t3tpOOGhf2WfTpcmbpxaWtDbdJdKdjd0aEiTkvOmS4NBkG6kzlaAHI9AkQ3iVqbFWM3Ei7mZ4o1Q==
+
+preline@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/preline/-/preline-2.0.3.tgz#48b460b7f0b9fadeb1f8bbb0bba70832516716c4"
+  integrity sha512-V/sLmRIHd23UCdvJNRKKszntgUqA0381erVzRpQ48NjjMOgI7DyFW4mr+lg387V0oeBc5Dx9Jxa5voppVoH9GA==
+  dependencies:
+    "@popperjs/core" "^2.11.2"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

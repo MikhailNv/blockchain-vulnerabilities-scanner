@@ -24,6 +24,7 @@ const fetchTopicTweets = async () => {
     if (slugTopic.value === viewedTopic.value) return
     try {
         loading.value = true
+        console.log(slugTopic.value)
         const fetchedTweets = await fetchTweets([topicFilter(slugTopic.value)])
         tweets.value = fetchedTweets
         viewedTopic.value = slugTopic.value
