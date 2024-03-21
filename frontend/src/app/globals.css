@@ -45,3 +45,18 @@ body {
 .swv-dropdown-list-active {
   @apply transform -translate-y-3 md:translate-y-3;
 }
+
+.alert-enter {
+  opacity: 0;
+}
+.alert-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.alert-exit {
+  opacity: 1;
+}
+.alert-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}

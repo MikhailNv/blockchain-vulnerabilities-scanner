@@ -15,22 +15,21 @@ export async function serverAction(req: Array<string>, years: string[]) {
     for (var year of years) {
       path_to_cve_jsons_array.push(`${__feeds}/nvdcve-1.1-${year}.json.gz`);
     }
-    // console.log(splitted_output_rpm2cpe);
     const output_rpm2cpe = execSync(`rpm2cpe -rpm 1 -cpe 2 -e 1 << EOF ${req.join("\n")}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
-    const splitted_output_rpm2cpe = output_rpm2cpe.replace(/\d\:alt.*\n/gi, '\n');
-    console.log(splitted_output_rpm2cpe.split('\n').slice(0, 50).join("\n"));
-    // console.log(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${splitted_output_rpm2cpe.split('\n').slice(0, 50).join("\n")}\nEOF`);
-
-    const output_cpe2cve = execSync(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${splitted_output_rpm2cpe}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
-
+    const updated_output_rpm2cpe: Array<string> = [];
+    for (var cpe of output_rpm2cpe.split('\n')) {
+      if (cpe != '') {
+        updated_output_rpm2cpe.push(cpe.split(':').slice(0, 5).join(":"));
+      }
+    }
+    const output_cpe2cve = execSync(`cpe2cve -cpe 1 -e 1 -cve 1 ${path_to_cve_jsons_array.join(" ")} << EOF\n${updated_output_rpm2cpe.join("\n")}\nEOF`, { shell: '/bin/bash', encoding: 'utf-8' });
+    console.log(output_cpe2cve)
     const splitted = output_cpe2cve.split(/\r?\n/);
     const filtered = splitted.filter( (e: string) => {
       return e !== '';
     }).filter( (e: string) => {
       return e !== "CVE-2021-45967"
     });
-    console.log(filtered.toString());
-
     return(filtered.toString());
 }
 
@@ -65,8 +64,8 @@ export const pinStringToIPFS = async (string: string) => {
         'Authorization': JWT
       }
     })
-    return res.data
-  } catch (error) {
-    console.log(error)
+    return res.data["IpfsHash"]
+  } catch (error: any) {
+    return error.message
   }
 }

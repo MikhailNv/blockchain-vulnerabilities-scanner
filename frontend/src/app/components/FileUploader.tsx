@@ -3,11 +3,11 @@ import {FC} from 'react'
 import { useState } from 'react';
 import { serverAction, getYearRangeNvdCve, sss, pinStringToIPFS } from "./ServerAction";
 import { sendTweet } from "../scripts/send-tweets"
-import { InboxOutlined } from '@ant-design/icons';
+import { InboxOutlined, LoadingOutlined  } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { message, Upload } from 'antd';
 
-import { Select, Space } from 'antd';
+import { Select, Space, Input, Spin } from 'antd';
 import type { SelectProps } from 'antd';
 
 const { Dragger } = Upload;
@@ -15,21 +15,30 @@ const { Dragger } = Upload;
 const FileUploader: FC = () => {
     const [options, setOptions] = useState<SelectProps['options']>([]);
     const [fileState, setFileState] = useState<boolean>(false);
+    const [onScanning, setOnScanning] = useState<boolean>(true);
     const [years, setYears] = useState<boolean>(false);
+    const [topic, setTopic] = useState<string>('')
     const [choosenYears, setChoosenYears] = useState<string[]>([]);
     const [file, setFile] = useState<File>();
 
     async function getFileNamesFromZip(choosenYears: string[], e: File) {
-        // const file = e;
-        // const zipReader = new ZipReader(new BlobReader(file));
-        // const entries = await zipReader.getEntries();
-        // const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
-        // const cves: string = await serverAction(packages_name, choosenYears);
-        // const cid: any = await pinStringToIPFS(cves);
-        const tweet = await sendTweet('Alt Linux', "QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV")
+        setOnScanning(false)
+        const file = e;
+        const zipReader = new ZipReader(new BlobReader(file));
+        const entries = await zipReader.getEntries();
+        const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
+        const cves: string = await serverAction(packages_name, choosenYears);
+        console.log("TOPIC: ", topic)
+        console.log("TOPIC: ", typeof topic)
+        console.log(cves)
+        const cid: string = await pinStringToIPFS(cves);
+        console.log(cid)
+        const tweet = await sendTweet(topic, cid)
+        // const tweet = await sendTweet('Alt', "QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV")
         console.log("TWEET: ", tweet)
-        // return entries.map((entry) => entry.filename);
-        return "string"
+        setOnScanning(true)
+        message.success('Сканирование завершено успешно');
+        return entries.map((entry) => entry.filename);
     }
 
     const handleChange = (value: string[]) => {
@@ -133,27 +142,40 @@ const FileUploader: FC = () => {
                     </p>
                 </Dragger>
             </div>
-            {fileState ? 
-                <div className="mt-8 space-y-3">
-                    <Space style={{ width: '100%' }} direction="vertical">
-                    <Select
-                    mode="multiple"
-                    allowClear
-                    style={{ width: '100%' }}
-                    placeholder="Please select"
-                    onChange={handleChange}
-                    options={options}
-                    />
-                    </Space>
-                </div>
+            {fileState ?
+                <>
+                    <div className="mt-8 space-y-3">
+                        <Input placeholder="Введите название загруженного ПО" onChange={(e) => setTopic(e.target.value)}/>
+                    </div>
+                    <div className="mt-8 space-y-3">
+                        <Space style={{ width: '100%' }} direction="vertical">
+                        <Select
+                        mode="multiple"
+                        allowClear
+                        style={{ width: '100%' }}
+                        placeholder="Выберите года для сканирования уязвимостей"
+                        onChange={handleChange}
+                        options={options}
+                        />
+                        </Space>
+                    </div>
+                </>
                 : <></>
             }
             <div className="mt-8 space-y-3">
                 <button type="button"
                 className="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg transition ease-in duration-300 disabled:opacity-50"
-                disabled={years ? false : true}
+                disabled={onScanning && years && topic ? false : true}
                 onClick={() => getFileNamesFromZip(choosenYears, file!)}>
-                Загрузка
+                    {
+                        onScanning ? 
+                        <p className="mr-2 text-white-400">Начать сканирование</p>
+                        : 
+                        <>
+                            <p className="mr-2 text-white-400">Сканирование</p>
+                            <Spin indicator={<LoadingOutlined style={{ fontSize: 24, color: "white" }} spin />} />
+                        </>
+                    }
                 </button>
             </div>
         </div>
