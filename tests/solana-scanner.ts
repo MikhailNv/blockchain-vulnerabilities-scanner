@@ -10,7 +10,7 @@ describe("solana-scanner", () => {
 
   const program = anchor.workspace.SolanaScanner as Program<SolanaScanner>;
 
-  it('can send a new tweet', async () => {
+  it('проверка создания новой записи с корректными данными от текущего адреса кошелька', async () => {
     // Before sending the transaction to the blockchain.
     const tweet = anchor.web3.Keypair.generate();
     // const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -36,7 +36,7 @@ describe("solana-scanner", () => {
     assert.ok(tweetAccount.timestamp);
   });
 
-  it('can send a new tweet without a topic', async () => {
+  it('проверка создания новой записи без указания названия программного обеспечения', async () => {
     // Call the "SendTweet" instruction.
     const tweet = anchor.web3.Keypair.generate();
     await program.rpc.sendTweet('', 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV', {
@@ -58,13 +58,13 @@ describe("solana-scanner", () => {
     assert.ok(tweetAccount.timestamp);
   });
 
-  it('can send a new tweet from a different author', async () => {
-    // Generate another user and airdrop them some SOL.
+  it('проверка создания новой записи с корректными данными от публичного адреса другого автора', async () => {
+    // Генерация нового автора и пополнение его баланса SOL для оплаты транзакции.
     const otherUser = anchor.web3.Keypair.generate();
     const signature = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000);
     await program.provider.connection.confirmTransaction(signature);
 
-    // Call the "SendTweet" instruction on behalf of this other user.
+    // Вызов "SendTweet" инструкции от созданного пользователя.
     const tweet = anchor.web3.Keypair.generate();
     await program.rpc.sendTweet('Astra Linux', 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV', {
         accounts: {
@@ -75,22 +75,22 @@ describe("solana-scanner", () => {
         signers: [otherUser, tweet],
     });
 
-    // Fetch the account details of the created tweet.
+    // Запрос на получение данных об учетной записи
     const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
 
-    // Ensure it has the right data.
+    // Проверка корректности записанных данных
     assert.equal(tweetAccount.author.toBase58(), otherUser.publicKey.toBase58());
     assert.equal(tweetAccount.topic, 'Astra Linux');
     assert.equal(tweetAccount.content, 'QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV');
     assert.ok(tweetAccount.timestamp);
   });
 
-  it('can fetch all tweets', async () => {
+  it('проверка получения всех ранее созданных записей из блокчейна', async () => {
     const tweetAccounts = await program.account.tweet.all();
     assert.equal(tweetAccounts.length, 3);
   });
 
-  it('can filter tweets by author', async () => {
+  it('проверка получения всех ранее созданных записей указанным автором', async () => {
     const authorPublicKey = program.provider.wallet.publicKey
     const tweetAccounts = await program.account.tweet.all([
         {
@@ -107,7 +107,7 @@ describe("solana-scanner", () => {
     }))
   });
 
-  it('can filter tweets by topics', async () => {
+  it('проверка получения всех ранее созданных записей с указанным названием программного обеспечения', async () => {
     const tweetAccounts = await program.account.tweet.all([
         {
             memcmp: {

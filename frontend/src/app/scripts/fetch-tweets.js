@@ -10,17 +10,17 @@ export const fetchTweets = async (filters = []) => {
 
 export const authorFilter = (authorBase58PublicKey) => ({
     memcmp: {
-        offset: 8, // Discriminator.
+        offset: 8, // Длина дискриминатора
         bytes: authorBase58PublicKey,
     }
 })
 
 export const topicFilter = (topic) => ({
     memcmp: {
-        offset: 8 + // Discriminator.
-            32 + // Author public key.
-            8 + // Timestamp.
-            4, // Topic string prefix.
+        offset: 8 + // Длина дискриминатора
+            32 + // Длина публичного ключа автора
+            8 + // Длина временной метки
+            4, // Префикс строки названия ПО
         bytes: bs58.encode(Buffer.from(topic)),
     }
 })

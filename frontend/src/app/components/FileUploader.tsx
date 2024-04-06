@@ -21,21 +21,20 @@ const FileUploader: FC = () => {
     const [choosenYears, setChoosenYears] = useState<string[]>([]);
     const [file, setFile] = useState<File>();
 
-    async function getFileNamesFromZip(choosenYears: string[], e: File) {
+    async function startScanning(choosenYears: string[], e: File) {
         setOnScanning(false)
+        
         const file = e;
         const zipReader = new ZipReader(new BlobReader(file));
         const entries = await zipReader.getEntries();
         const packages_name = entries.map((entry) => entry.filename.split("/").pop()!);
+
         const cves: string = await serverAction(packages_name, choosenYears);
-        console.log("TOPIC: ", topic)
-        console.log("TOPIC: ", typeof topic)
-        console.log(cves)
+        
         const cid: string = await pinStringToIPFS(cves);
-        console.log(cid)
+        
         const tweet = await sendTweet(topic, cid)
-        // const tweet = await sendTweet('Alt', "QmVKkJiojwUdywtawEoQA7fhc8SRwJPMAkNj9TfjLCXLiV")
-        console.log("TWEET: ", tweet)
+    
         setOnScanning(true)
         message.success('Сканирование завершено успешно');
         return entries.map((entry) => entry.filename);
@@ -166,7 +165,7 @@ const FileUploader: FC = () => {
                 <button type="button"
                 className="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg transition ease-in duration-300 disabled:opacity-50"
                 disabled={onScanning && years && topic ? false : true}
-                onClick={() => getFileNamesFromZip(choosenYears, file!)}>
+                onClick={() => startScanning(choosenYears, file!)}>
                     {
                         onScanning ? 
                         <p className="mr-2 text-white-400">Начать сканирование</p>
